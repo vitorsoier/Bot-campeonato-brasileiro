@@ -10,7 +10,6 @@ bot.
 """
 
 import logging
-import tabulate
 
 from scraping import arquivo
 from telegram import Update, ForceReply
@@ -34,14 +33,15 @@ def start(update: Update, context: CallbackContext) -> None:
         reply_markup=ForceReply(selective=True),
     )
 
-def tabela (update: Update, context: CallbackContext) -> None:
+
+def tabela(update: Update, context: CallbackContext) -> None:
     serie_a, serie_b = dados()
-    update.message.reply_text(serie_a.to_string(formatters={'Text':'{{:<{}s}}'.format(serie_a['time'].str.len().max()).format}, index=False))
+    update.message.reply_text(serie_a.to_string(formatters={'Text': '{{:<{}s}}'.format(
+        serie_a['time'].str.len().max()).format}, index=False))
 
 
-def time(update : Update, context: CallbackContext) -> None:
+def time(update: Update, context: CallbackContext) -> None:
     """"select the team you want to track"""
-    
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
@@ -53,11 +53,12 @@ def echo(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
     update.message.reply_text(update.message.text)
 
+
 def dados():
 
     pagina = arquivo()
-    hmlt1, html2 = pagina.obtem_html("https://www.cnnbrasil.com.br/esporte/futebol/tabela-brasileirao-serie-a-2022/", 
-                                "https://www.cnnbrasil.com.br/esporte/futebol/tabela-brasileirao-serie-b-2022/")
+    hmlt1, html2 = pagina.obtem_html("https://www.cnnbrasil.com.br/esporte/futebol/tabela-brasileirao-serie-a-2022/",
+                                     "https://www.cnnbrasil.com.br/esporte/futebol/tabela-brasileirao-serie-b-2022/")
 
     df1, df2 = pagina.gerando_df(hmlt1, html2)
 
@@ -65,9 +66,10 @@ def dados():
 
     return serie_a, serie_b
 
+
 def main() -> None:
     """Start the bot."""
-    with open ('token.txt', 'r') as credenciais:
+    with open('token.txt', 'r') as credenciais:
         token = credenciais.read()
 
     updater = Updater(token)
@@ -78,12 +80,13 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("tabela", tabela))
 
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(MessageHandler(
+        Filters.text & ~Filters.command, echo))
 
     updater.start_polling()
 
     updater.idle()
-    
+
 
 if __name__ == '__main__':
     main()
