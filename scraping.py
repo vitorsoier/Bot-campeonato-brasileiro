@@ -2,11 +2,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import requests
 
-
-class CnnBrasilCrawler:
-
-    SERIEA_URL = "https://www.cnnbrasil.com.br/esporte/futebol/tabela-brasileirao-serie-a-2022/"
-    SERIEB_URL = "https://www.cnnbrasil.com.br/esporte/futebol/tabela-brasileirao-serie-b-2022/"
+class Crawler:
 
     def obtem_html(self, url):
         header = {
@@ -17,7 +13,7 @@ class CnnBrasilCrawler:
         response = requests.get(url, headers=header)
 
         return response.content
-
+    
     def gerando_df(self, content):
 
         soup = BeautifulSoup(content, 'html.parser')
@@ -29,6 +25,13 @@ class CnnBrasilCrawler:
         tabela = pd.read_html(str_tabela)
 
         return tabela
+
+
+class CnnBrasilCrawler(Crawler):
+
+    SERIEA_URL = "https://www.cnnbrasil.com.br/esporte/futebol/tabela-brasileirao-serie-a-2022/"
+    SERIEB_URL = "https://www.cnnbrasil.com.br/esporte/futebol/tabela-brasileirao-serie-b-2022/"
+
 
     def formater(self, table):
 
@@ -49,6 +52,19 @@ class CnnBrasilCrawler:
 
         return serie
 
+"""class CbfCrawler(Crawler):
+
+    SERIEA_URL = 'https://www.cbf.com.br/futebol-brasileiro/competicoes/campeonato-brasileiro-serie-a'
+    SERIEB_URL = 'https://www.cbf.com.br/futebol-brasileiro/competicoes/campeonato-brasileiro-serie-b'
+
+    def formater(self, table):
+        
+        serie = table
+
+        return serie"""
+
+class Dados(CnnBrasilCrawler):
+
     def executer(self, serie):
 
         conteudo = self.obtem_html(serie)
@@ -60,14 +76,8 @@ class CnnBrasilCrawler:
         return table
 
 
-crawler = CnnBrasilCrawler()
+#crawler = Dados()
+#print(crawler.executer(CnnBrasilCrawler.SERIEB_URL).to_string())
+
+crawler = Dados()
 print(crawler.executer(CnnBrasilCrawler.SERIEB_URL).to_string())
-
-
-"""pagina = arquivo()
-hmlt1, html2 = pagina.obtem_html("https://www.cnnbrasil.com.br/esporte/futebol/tabela-brasileirao-serie-a-2022/", 
-                            "https://www.cnnbrasil.com.br/esporte/futebol/tabela-brasileirao-serie-b-2022/")
-df1, df2 = pagina.gerando_df(hmlt1, html2)
-serie_a, serie_b = pagina.formater(df1, df2)
-
-print(serie_b.to_string())"""
