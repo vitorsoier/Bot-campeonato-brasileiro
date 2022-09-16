@@ -27,6 +27,16 @@ class Crawler:
 
         return tabela
 
+    def executer(self, serie):
+
+        conteudo = self.obtem_html(serie)
+
+        df = self.gerando_df(conteudo)
+
+        table = self.formater(df)
+
+        return table
+
 
 class CnnBrasilCrawler(Crawler):
 
@@ -51,16 +61,6 @@ class CnnBrasilCrawler(Crawler):
         serie = serie.set_index('posicao')
 
         return serie
-
-    def executer(self, serie):
-
-        conteudo = self.obtem_html(serie)
-
-        df = self.gerando_df(conteudo)
-
-        table = self.formater(df)
-
-        return table
 
 
 class CbfCrawler(Crawler):
@@ -96,30 +96,6 @@ class CbfCrawler(Crawler):
         serie = serie.set_index('posicao')
 
         return serie
-
-    def executer(self, serie):
-
-        conteudo = self.obtem_html(serie)
-
-        df = self.gerando_df(conteudo)
-
-        table = self.formater(df)
-
-        return table
-
-
-# Dessa forma estou pegando o formater do primeiro, como selecionar o formater de acordo com o site?
-'''class Dados(CnnBrasilCrawler, CbfCrawler):
-
-    def executer(self, serie):
-
-        conteudo = self.obtem_html(serie)
-
-        df = self.gerando_df(conteudo)
-
-        table = self.formater(df)
-
-        return table'''
 
 
 #crawler = Dados()
